@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REQUEST STATUS</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.33/dist/sweetalert2.all.min.js"></script>
+    <!-- Internal CSS -->
+    <link rel="stylesheet" href="/public/css/PJ-All.css">
+</head>
+
+<body class="bgc1">
+    <nav class="m-5 p-2">
+        <div class="row px-4">
+            <div class="col-3 h2 textc1">
+                REQUEST STATUS
+            </div>
+            <div class="col text-end h4 pt-2">
+                <a href="/ASSET_LIST" class="textc1">ASSET LIST</a>
+                <a href="/HISTORY" class="ms-3 textc1">HISTORY</a>
+                <a class="text-danger ms-3 textc1" onclick='logout()'>LOG OUT</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="row">
+        <div class="col-1"></div>
+
+        <div class="col-10 table1">
+            <h1 class="text-white text-center my-2">REQUEST STATUS</h1>
+            <table class="table table-striped text-center">
+                <thead>
+                    <tr>
+                        <th>BookingID</th>
+                        <th>Model</th>
+                        <th>Approver</th>
+                        <th>Date/return Date</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="tbody">
+                </tbody>
+            </table>
+
+        </div>
+        <div class="col-1"></div>
+    </div>
+    <script>
+        async function getBooking() {
+            try {
+                const response = await fetch('/br-REQUEST_STATUS');
+                if (response.ok) {
+                    const data = await response.json();
+                    let table = '';
+                    data.forEach(function (b) {
+                        if ((b.ApproverStatus==1&&b.ReturnStatus==4)||b.ApproverStatus==3) {
+                            table += `<tr>
+                        <td>${b.BookingID}</td>
+                        <td>${b.Model}</td>`
+                            if (b.ApproverStatus == 3) {
+                                table += `<td></td>`
+                            } else {
+                                table += `<td>${b.OwnerName}</td>`
+                            }
+                            table += `<td>${b.Pickup} - ${b.Dropoff}</td>`
+                         if (b.ApproverStatus==1) {
+                            table +=`<td>
+                            <div class="text-bg-success rounded-pill badge">Approver</div>
+                        </td>
+                        <td><a href="/PAYMENT" class="btn text-bg-primary rounded-pill badge" id="btnPayment">Payment</a></td>
+                    </tr>`;
+                         }  else {
+                            table +=`<td>
+                            <div class="bg-warning text-white rounded-pill badge">Pending</div>
+                        </td>
+                        <td></td>
+                    </tr>`;
+                         }
+                        
+                        }
+                    });
+
+                    tbody.innerHTML = table;
+
+                }
+                else if (response.status === 401) {
+                    const data = await response.text();
+                    throw Error(data);
+                }
+                else {
+                    throw Error('Connection error');
+                }
+            } catch (error) {
+                Swal.fire({
+                    "icon": "error",
+                    "title": error.message
+                });
+            }
+        }
+
+        getBooking();
+
+        function logout() {
+            // alert(".");
+            Swal.fire({
+                title: 'Log out',
+                showCancelButton: true,
+                confirmButtonText: 'confirm',
+            }).then(function (result) {
+                if (result.value) {
+                    window.location.href = '/logout';
+                }
+            });
+        }
+        document.querySelector('#btnPayment').onclick = function () {
+            window.location.href = '/payment';
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HISTORY</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.33/dist/sweetalert2.all.min.js"></script>
+    <!-- <link rel="stylesheet" href="/public/css/bootstrap.min.css">
+    <script src="/public/js/bootstrap.min.js"></script> -->
+    <!-- Internal CSS -->
+    <link rel="stylesheet" href="/public/css/PJ-All.css">
+
+</head>
+
+<body class="bgc1">
+    <nav class="m-5 p-2">
+        <div class="row px-4">
+            <div class="col-3 h2 textc1">
+                HISTORY
+            </div>
+            <div class="col text-end h4 pt-2">
+                <a href="/ASSET_LIST" class="textc1">ASSET LIST</a>
+                <a href="/DASHBOARD" class="ms-3 textc1">DASHBOARD</a>
+                <a href="/RETURN_ASSET" class="ms-3 textc1">RETURN ASSET</a>
+                <a class="text-danger ms-3 textc1" onclick='logout()'>LOG OUT</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="row">
+        <div class="col-1"></div>
+
+        <div class="col-10 table1">
+            <h1 class="text-white text-center my-2">HISTORY</h1>
+            <table class="table table-striped text-center table-light">
+                <thead>
+                    <tr>
+                        <th>NO</th>
+                        <th>Model</th>
+                        <th>Borrower</th>
+                        <th>Approver</th>
+                        <th>Date/return Date</th>
+                        <th>Receiver</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody">
+                </tbody>
+            </table>
+        </div>
+        <div class="col-1"></div>
+    </div>
+    <script>
+        async function getBooking() {
+            try {
+                const response = await fetch('/st-HISTORY');
+                if (response.ok) {
+                    const data = await response.json();
+                    let table = '';
+                    data.forEach(function (b) {
+                        if (b.ReturnStatus != 4&& b.BorrowerName!=b.StaffName) {
+                            table += `<tr>
+                        <td>${b.BookingID}</td>
+                        <td>${b.Model}</td>
+                        <td>${b.BorrowerName}</td>
+                        <td>${b.OwnerName}</td>
+                        <td>${b.Pickup} - ${b.Dropoff}</td>`;
+                            if (b.ReturnStatus == 1) {
+                                table += `<td>${b.StaffName}</td><td>
+                        <div class="bg-success rounded-pill badge">Return</div>
+                    </td>
+                </tr>`
+                            } else if (b.ReturnStatus == 2) {
+                                table += `<td></td><td>
+                        <div class="bg-danger rounded-pill badge">Not Return</div>
+                    </td>
+                </tr>`
+                            } else if (b.ReturnStatus == 3) {
+                                table += `<td></td><td>
+                        <div class="bg-secondary rounded-pill badge">Not Approved</div>
+                    </td>
+                </tr>`
+                            }
+                        }
+                    });
+                    tbody.innerHTML = table;
+                }
+                else if (response.status === 401) {
+                    const data = await response.text();
+                    throw Error(data);
+                }
+                else {
+                    throw Error('Connection error');
+                }
+            } catch (error) {
+                Swal.fire({
+                    "icon": "error",
+                    "title": error.message
+                });
+            }
+        }
+
+        getBooking();
+
+        function logout() {
+            // alert(".");
+            Swal.fire({
+                title: 'Log out',
+                showCancelButton: true,
+                confirmButtonText: 'confirm',
+            }).then(function (result) {
+                if (result.value) {
+                    window.location.href = '/logout';
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

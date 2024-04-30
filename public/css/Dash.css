@@ -1,0 +1,74 @@
+nav {
+    color: blanchedalmond;
+    background-color: white;
+    border-radius: 200px
+}
+
+.textc1 {
+    color: #01204c;
+    font-weight: 700;
+}
+
+.bgc1 {
+    background-color: #01204c;
+}        
+.grid-container{
+    display: grid;
+    grid-template-columns:auto auto;
+    grid-gap: 20px;
+    border-radius: 25px;
+}
+.card{
+    width: 400px;
+    border-radius: 17px;
+    left: 100px;
+    
+}
+.bg1{
+    background-color: rgb(48, 155, 42);
+    border: solid 10px white;
+    color: white;
+    width: 400px;
+    padding: 1rem;    
+    margin: 20px;
+    
+    
+}
+.bg2{
+    background-color: rgb(212, 31, 31);
+    border: solid 10px white;
+    color: white;
+    width: 400px;
+    padding: 1rem;    
+    margin: 20px;
+}
+.bg3{
+    background-color: rgb(212, 146, 31);
+    border: solid 10px white;
+    color: white;
+    width: 400px;
+    padding: 1rem;    
+    margin: 20px;
+}
+.bg4{
+    background-color: rgb(212, 146, 31);
+    border: solid 10px white;
+    color: white;
+    width: 400px;
+    padding: 1rem;    
+    margin: 20px;
+}
+.bg5{
+    background-color: rgb(83, 189, 239);
+    border: solid 10px white;
+    color: white;
+    width: 400px;
+    padding: 1rem;       
+    margin: 20px;            
+    
+       
+      }
+      .text2{
+        display: flex;
+        justify-content: space-between;
+      }

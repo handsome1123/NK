@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REQUEST BORROW</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <!-- <link rel="stylesheet" href="/public/css/bootstrap.min.css">
+        <script src="/public/js/bootstrap.min.js"></script> -->
+    <link rel="stylesheet" href="/public/css/PJ-All.css">
+</head>
+
+<body class="bgc1">
+    <nav class="m-5 p-2">
+        <div class="row px-4">
+            <div class="col-3 h2 textc1">
+                REQUEST BORROW
+            </div>
+            <div class="col text-end h4 pt-2">
+                <a href="/REQUEST_STATUS" class="textc1">REQUEST STATUS</a>
+                <a href="/HISTORY" class="ms-3 textc1">HISTORY</a>
+                <a class="text-danger ms-3 textc1" onclick='logout()'>LOG OUT</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Put page body down here -->
+    <div class="container table1 text-white">
+        <div class="position-relative">
+            <a class="btn btn-lg text-white position-absolute top-0 end-0 m-3 me-5" href="/ASSET_LIST">
+                << BACK</a>
+        </div>
+        <h1 class="text-center py-2">RENT MOTORCYCLE</h1>
+
+        <div class="row px-5 pt-3">
+            <div class="col-4">
+                <div class="container">
+                    <div class="mx-auto" id="showimg"></div>
+                    <div class="container text-center mt-3">
+                        <h5 id="model">-</h5>
+                        <p id="price">-</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-8">
+                <div class="wrapper rounded">
+                    <form id="formBook">
+                        <div class="row mt-3">
+                            <div class="col-md-6 mt-md-0 mt-3">
+                                <label>
+                                    <h4>Pickup date</h4>
+                                </label>
+                                <div id="today" class="form-control rounded-pill"></div>
+                            </div>
+                            <div class="col-md-6 mt-md-0 mt-3">
+                                <label>
+                                    <h4>Pickup time</h4>
+                                </label>
+                                <input type="time" name="pickuptime" class="form-control rounded-pill" required>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-6 mt-md-0 mt-3">
+                                <label>
+                                    <h4>Drop off date</h4>
+                                </label>
+                                <div id="tomorrow" class="form-control rounded-pill"></div>
+
+                            </div>
+                            <div class="col-md-6 mt-md-0 mt-3">
+                                <label>
+                                    <h4>Drop off time</h4>
+                                </label>
+                                <input type="time" name="dropofftime" class="form-control rounded-pill" required>
+                            </div>
+                        </div>
+                        <div class="text-center m-4 ">
+                            <button type="submit" class="btn btn-primary rounded-pill px-5 py-0">
+                                <h5 class="mx-5 text-white">Rent</h5></a>
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        n1 = new Date();
+        y1 = n1.getFullYear();
+        m1 = n1.getMonth() + 1;
+        d1 = n1.getDate();
+        n2 = new Date(n1.setDate(n1.getDate() + 1))
+        y2 = n2.getFullYear();
+        m2 = n2.getMonth() + 1;
+        d2 = n2.getDate();
+        document.getElementById("today").innerHTML = "📅 " + d1 + "/" + m1 + "/" + y1;
+        document.getElementById("tomorrow").innerHTML = "📅 " + d2 + "/" + m2 + "/" + y2;
+
+        document.addEventListener("DOMContentLoaded", async function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const motorcycleID = urlParams.get('MotorcycleID');
+
+            // Fetch motorcycle details using the MotorcycleID
+            try {
+                const response = await fetch(`/br-Rent-Motorcycle`, {method: 'GET'});
+                if (response.ok) {
+                    const data = await response.json();
+                    data.forEach(function (m) {
+                        if (motorcycleID == m.MotorcycleID) {
+                            document.getElementById("showimg").innerHTML = `<img class="mx-auto" src="/public/img/motorcycles/${m.MotorcycleImg}" id="showimg">`;
+                            document.getElementById("model").innerText = m.Model;
+                            document.getElementById("price").innerText = `THB ${m.Price} / 1 Day`;
+                        }
+                    });
+                } else {
+                    throw Error('Failed to fetch motorcycle details');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Failed to fetch motorcycle details. Please try again.');
+            }
+        })
+
+        const formBook = document.querySelector('#formBook');
+        formBook.onsubmit = async function (e) {
+            e.preventDefault();
+            try {
+                const response = await fetch('/user');
+                if (response.ok) {
+                    const data = await response.json();
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const motorcycleID = urlParams.get('MotorcycleID');
+                    const formBook = document.querySelector('#formBook');
+                    formBook.onsubmit = async function (e) {
+                        e.preventDefault();
+                        const pickuptime = formBook['pickuptime'].value;
+                        const dropofftime = formBook['dropofftime'].value;
+                        const pickupdatetime = `${y1}-${m1}-${d1} ${pickuptime}`
+                        const dropoffdatetime = `${y2}-${m2}-${d2} ${dropofftime}`
+
+                        const options = {
+                            method: 'POST',
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ "BorrowerID": data.userID, "MotorcycleID": motorcycleID, "Pickup": pickupdatetime, "Dropoff": dropoffdatetime }),
+                        }
+                        // Send a POST request to the server
+                        try {
+                            const response = await fetch('/bookMotorcycle', options)
+                            if (response.ok) {
+                                const data = await response.text();
+                                // Redirect to REQUEST_STATUS page or display a success message
+                                location.replace(data);
+                            } else {
+                                throw Error('Failed to book motorcycle');
+                            }
+                        } catch (error) {
+                            console.error(error);
+                            // Display error message to the user
+                            alert('Failed to book motorcycle. Please try again.');
+                        }
+                    }
+                }
+                else {
+                    throw Error('Connection error');
+                }
+            } catch (err) {
+                console.error(err);
+                alert(err.message);
+            }
+        }
+
+        function logout() {
+            // alert(".");
+            Swal.fire({
+                title: 'Log out',
+                showCancelButton: true,
+                confirmButtonText: 'confirm',
+            }).then(function (result) {
+                if (result.value) {
+                    window.location.href = '/logout';
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

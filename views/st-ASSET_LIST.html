@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASSET LIST</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.33/dist/sweetalert2.all.min.js"></script>
+
+    <!-- <link rel="stylesheet" href="/public/css/bootstrap.min.css">
+    <script src="/public/js/bootstrap.min.js"></script> -->
+    <link rel="stylesheet" href="/public/css/PJ-All.css">
+
+</head>
+
+<body class="bgc1">
+    <nav class="m-5 p-2">
+        <div class="row px-4">
+            <div class="col-3 h2 textc1">
+                ASSET LIST
+            </div>
+            <div class="col text-end h4 pt-2">
+                <a href="/HISTORY" class="textc1">HISTORY</a>
+                <a href="/DASHBOARD" class="ms-3 textc1">DASHBOARD</a>
+                <a href="/RETURN_ASSET" class="mx-3 textc1">RETURN ASSET</a>
+                <a class="text-danger ms-3 textc1" onclick='logout()'>LOG OUT</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="row">
+        <div class="col-1"></div>
+
+        <div class="col-10 table1">
+            <div class="position-relative">
+                <button class="btn btn-sm text-white position-absolute top-0 end-0 mt-4 me-3" data-bs-toggle="modal"
+                    data-bs-target="#modalAdd">
+                    + <u>CREATE</u></button>
+            </div>
+            <h1 class="text-white text-center my-2">ASSET LIST</h1>
+            <table class="table table-striped text-center table-light">
+                <thead>
+                    <tr>
+                        <th>NO</th>
+                        <th>Model</th>
+                        <th>Price/Day</th>
+                        <th>Borrower</th>
+                        <th>Lender</th>
+                        <th>Status</th>
+                        <th>Change-Status</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody">
+                </tbody>
+            </table>
+        </div>
+        <div class="col-1"></div>
+    </div>
+
+    <!-- Add Modal -->
+    <div class="modal fade" id="modalAdd" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog"
+        aria-labelledby="modalTitleId" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-l" role="document">
+            <div class="modal-content table1 pb-0">
+                <div class="modal-header bg-white rounded-pill m-4 mb-0">
+                    <h5 class="modal-title textc1" id="modalTitleId">
+                        Create Asset
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- modal-body -->
+                    <form action="/staff/add" method="post" enctype="multipart/form-data" id="formAdd"
+                        class="container text-white h5">
+                        <div class="btn btn-light rounded-pill">
+                            <label for="image_uploads">Choose images to upload (PNG, JPG)</label>
+                            <input type="file" id="image_uploads" name="image_uploads" accept=".jpg, .jpeg, .png">
+                        </div>
+                        <div class="preview text-white text-center">
+                            <p>No files currently selected for upload</p>
+                        </div>
+                        <label for="model">Model</label>
+                        <input class="form-control rounded-pill" type="text" name="model" id="newmodel"
+                            placeholder="Model" required>
+                        <label for="price" class="mt-2">Price/day</label>
+                        <input class="form-control rounded-pill" type="number" name="price" id="newprice"
+                            placeholder="Price/day" required>
+                        <label for="lender" class="mt-2">LenderID</label>
+                        <input class="form-control rounded-pill" type="number" name="lender" id="newlender"
+                            placeholder="LenderID" required>
+
+                        <div class="text-end mt-2 me-2">
+                            <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">
+                                Close
+                            </button>
+                            <button type="submit" class="btn btn-primary rounded-pill">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+<div class="modal fade" id="modalEdit" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-white rounded-pill m-4 mb-0">
+                <h5 class="modal-title textc1" id="modalTitleId">Edit Asset</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="image_uploads_" class="form-label">Choose images to upload (PNG, JPG)</label>
+                        <input type="file" class="form-control" id="image_uploads_" name="image_uploads_" accept=".jpg, .jpeg, .png">
+                        <div class="preview text-white text-center mt-2">
+                            <p>No files currently selected for upload</p>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Model_" class="form-label">Model</label>
+                        <input type="text" class="form-control rounded-pill" id="Model_" name="Model_" placeholder="Model" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Price_" class="form-label">Price/day</label>
+                        <input type="number" class="form-control rounded-pill" id="Price_" name="Price_" placeholder="Price/day" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Lender_" class="form-label">LenderID</label>
+                        <input type="number" class="form-control rounded-pill" id="Lender_" name="Lender_" placeholder="LenderID" required>
+                    </div>
+                    <div class="text-end mt-4">
+                        <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary rounded-pill" onclick="Edit()">Save</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    <script>
+        const addModal = new bootstrap.Modal(
+            document.getElementById("modalAdd")
+        );
+
+        const editModal = new bootstrap.Modal(
+            document.getElementById("modalEdit")
+        );
+
+        const input = document.querySelector("input");
+        const preview = document.querySelector(".preview");
+
+        input.style.opacity = 0;
+
+        input.addEventListener("change", updateImageDisplay);
+
+        function updateImageDisplay() {
+            while (preview.firstChild) {
+                preview.removeChild(preview.firstChild);
+            }
+
+            const curFiles = input.files;
+            if (curFiles.length === 0) {
+                const para = document.createElement("p");
+                para.textContent = "No files currently selected for upload";
+                preview.appendChild(para);
+            } else {
+                const list = document.createElement("ol");
+                preview.appendChild(list);
+
+                for (const file of curFiles) {
+                    const listItem = document.createElement("li");
+                    const para = document.createElement("p");
+                    if (validFileType(file)) {
+                        para.textContent = `File name ${file.name}, file size ${returnFileSize(
+                            file.size,
+                        )}.`;
+                        const image = document.createElement("img");
+                        image.src = URL.createObjectURL(file);
+                        image.alt = image.title = file.name;
+                        image.style = "width:250px;";
+
+                        listItem.appendChild(image);
+                        listItem.appendChild(para);
+                    } else {
+                        para.textContent = `File name ${file.name}: Not a valid file type. Update your selection.`;
+                        listItem.appendChild(para);
+                    }
+
+                    list.appendChild(listItem);
+                }
+            }
+        }
+
+        // https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types
+        const fileTypes = [
+            "image/apng",
+            "image/bmp",
+            "image/gif",
+            "image/jpeg",
+            "image/pjpeg",
+            "image/png",
+            "image/svg+xml",
+            "image/tiff",
+            "image/webp",
+            "image/x-icon",
+        ];
+
+        function validFileType(file) {
+            return fileTypes.includes(file.type);
+        }
+
+        function returnFileSize(number) {
+            if (number < 1024) {
+                return `${number} bytes`;
+            } else if (number >= 1024 && number < 1048576) {
+                return `${(number / 1024).toFixed(1)} KB`;
+            } else if (number >= 1048576) {
+                return `${(number / 1048576).toFixed(1)} MB`;
+            }
+        }
+
+        async function getMotorcycles() {
+            try {
+                const response = await fetch('/st-ASSET_LIST');
+                if (response.ok) {
+                    const data = await response.json();
+                    let table = '';
+                    data.forEach(function (b) {
+                        table += `<tr>
+                        <td>${b.MotorcycleID}</td>
+                        <td>${b.Model}</td>
+                        <td>${b.Price}</td>`;
+                        switch (b.Status) {
+                            case 1:
+                                table += `<td></td><td>${b.Ownername}</td><td><div class="bg-success rounded-pill badge">Available</div></td>
+                        <td><label class="switch">
+                                <input onclick="Change_Status()" type="checkbox" name="status" value=${b.MotorcycleID} checked>
+                                <span class="slider round"></span>
+                            </label></td>`
+                                break;
+                            case 2:
+                                table += `<td></td><td>${b.Ownername}</td><td><div class="bg-danger rounded-pill badge">Disabled</div></td>
+                        <td><label class="switch">
+                                <input onclick="Change_Status()" type="checkbox" name="status" value=${b.MotorcycleID}>
+                                <span class="slider round"></span>
+                            </label></td>`
+                                break;
+                            case 3:
+                                table += `<td>${b.Borrowername}</td><td>${b.Ownername}</td><td><div class="bg-warning rounded-pill badge">Borrowing</div></td>
+                        <td></td>`
+                                break;
+                            case 4:
+                                table += `<td>${b.Borrowername}</td><td>${b.Ownername}</td><td><div class="bg-secondary rounded-pill badge">Pending</div></td>
+                        <td></td>`
+                                break;
+                        }
+                        table += `<td><button onclick="editAsset(${b.MotorcycleID},  '${b.Model}', '${b.Price}') "class="btn">
+                    <img src="/public/img/Edit_icon_black.png" alt="" width="20px" style="margin-left: 10px;"></button></td>`
+                    });
+                    tbody.innerHTML = table;
+
+                }
+                else if (response.status === 401) {
+                    const data = await response.text();
+                    throw Error(data);
+                }
+                else {
+                    throw Error('Connection error');
+                }
+            } catch (error) {
+                Swal.fire({
+                    "icon": "error",
+                    "title": error.message
+                });
+            }
+        }
+
+        
+        getMotorcycles()
+
+        async function Change_Status() {
+            const status = document.querySelectorAll("input[name='status']")
+            const response = await fetch('/st-ASSET_LIST');
+            if (response.ok) {
+                const data = await response.json();
+                data.forEach(a => {
+                    status.forEach(async function (s) {
+                        if (s.value == a.MotorcycleID) {
+                            i = data.findIndex(x => x.MotorcycleID === s.value);
+                            if (s.checked == true) {
+                                try {
+                                    const response = await fetch(`/Status/${a.MotorcycleID}/1`);
+                                    if (response.ok) {
+                                        setTimeout(function () {
+                                            getMotorcycles()
+                                        }, 700)
+                                    }
+                                    else if (response.status === 401) {
+                                        const data = await response.text();
+                                        throw Error(data);
+                                    }
+                                    else {
+                                        throw Error('Connection error');
+                                    }
+                                } catch (error) {
+                                    Swal.fire({
+                                        "icon": "error",
+                                        "title": error.message
+                                    });
+                                }
+                            } else {
+                                try {
+                                    const response = await fetch(`/Status/${a.MotorcycleID}/2`);
+                                    if (response.ok) {
+                                        setTimeout(function () {
+                                            getMotorcycles()
+                                        }, 700)
+                                    }
+                                    else if (response.status === 401) {
+                                        const data = await response.text();
+                                        throw Error(data);
+                                    }
+                                    else {
+                                        throw Error('Connection error');
+                                    }
+                                } catch (error) {
+                                    Swal.fire({
+                                        "icon": "error",
+                                        "title": error.message
+                                    });
+                                }
+                            }
+                        }
+                    })
+                })
+            }
+        }
+
+        async function editAsset(motorId, model, price) {
+            const modal = document.getElementById('modalEdit');
+            const modelInput = document.getElementById('Model_');
+            const priceInput = document.getElementById('Price_');
+        
+            // Set the values of the input fields in the modal
+            modelInput.value = model;
+            priceInput.value = price;
+        
+            // Show the modal
+            $(modal).modal('show');
+        
+            // Store the motorId in a data attribute for future reference
+            modal.dataset.motorId = motorId;
+        }
+
+        async function Edit() {
+            // Retrieve data from the modal
+            const motorId = document.getElementById('modalEdit').dataset.motorId;
+            const model = document.getElementById('Model_').value;
+            const price = document.getElementById('Price_').value;
+        
+            try {
+                // Send the edited data to the server for processing
+                const options = {
+                    method: 'POST',
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        model,
+                        price
+                    }),
+                };
+        
+                const response = await fetch(`/staff/edit/${motorId}`, options); // Include motorId in the URL
+                if (response.ok) {
+                    window.location.reload();
+                    // Optionally, handle success response
+                    console.log('Asset edited successfully');
+                } else {
+                    // Handle error response
+                    console.error('Failed to edit asset');
+                }
+            } catch (error) {
+                // Handle network errors or other exceptions
+                console.error('Error editing asset:', error);
+            } finally {
+                // Optionally, close the modal
+                $('#modalEdit').modal('hide');
+            }
+        }
+        
+        
+        
+    
+        function saveAndEditAsset(ID) {
+    // Get form data
+    var formData = new FormData(document.getElementById('editForm'));
+    
+    // Add ID to the formData
+    formData.append('ID', ID);
+
+    // Send AJAX request
+    fetch('/staff/add', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.ok) {
+            // If the response is successful, reload the page or do any other action
+            window.location.reload(); // Reload the page
+        } else {
+            // If there's an error, handle it accordingly
+            console.error('Error updating asset:', response.statusText);
+            // You can display an error message or take any other action
+        }
+    })
+    .catch(error => {
+        console.error('Error updating asset:', error);
+        // Handle any network errors
+    });
+}
+
+
+        function logout() {
+            // alert(".");
+            Swal.fire({
+                title: 'Log out',
+                showCancelButton: true,
+                confirmButtonText: 'confirm',
+            }).then(function (result) {
+                if (result.value) {
+                    window.location.href = '/logout';
+                }
+            });
+        } 
+    
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</body>
+
+</html>
